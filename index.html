@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
     <title>Paint Canvas App</title>
 </head>
 <body>
@@ -16,25 +15,48 @@
         let isDrawing = false;
         let lastX = 0;
         let lastY = 0;
+        let hue = 0;
+        let direction = true;
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        context.strokeStyle = '#3F52E3'
+        context.strokeStyle = '#3F52E3';
+        context.lineWidth = 75;
         context.lineJoin = 'round';
         context.lineCap = 'round';
+        context.globalCompositeOperation = 'multiply';
 
         function draw(e) {
             if(!isDrawing) return;
             console.log(e);
+            context.strokeStyle = `hsl(${hue}, 100%, 50%)`;
             context.beginPath();
             context.moveTo(lastX, lastY);
             context.lineTo(e.offsetX, e.offsetY);
             context.stroke();
+
+            // lastX = e.offsetX;  using ES5
+            // lastY = e.offsetY;  using ES5
+            [lastX, lastY] = [e.offsetX, e.offsetY]; // using ES6 destructuring
+            hue++;
+            if(hue >= 360) {
+                hue = 0;
+            }
+
+            if(context.lineWidth >= 75 || context.lineWidth <= 1) {
+                direction = !direction;
+            }
+
+            direction ? context.lineWidth++ : context.lineWidth--;
         }
 
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        });
+
         canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mousedown', () => isDrawing = true);
         canvas.addEventListener('mouseout', () => isDrawing = false);
         canvas.addEventListener('mouseup', () => isDrawing = false);
     </script>
