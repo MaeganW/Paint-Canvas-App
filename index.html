@@ -20,13 +20,17 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        context.strokeStyle = '#2c2e34;';
+        context.strokeStyle = '#3F52E3'
         context.lineJoin = 'round';
         context.lineCap = 'round';
 
         function draw(e) {
             if(!isDrawing) return;
             console.log(e);
+            context.beginPath();
+            context.moveTo(lastX, lastY);
+            context.lineTo(e.offsetX, e.offsetY);
+            context.stroke();
         }
 
         canvas.addEventListener('mousemove', draw);
